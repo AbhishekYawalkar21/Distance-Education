@@ -4,21 +4,19 @@ from .models import Category, Course, Student, Instructor
 
 # Create your views here.
 def index(request):
-    # category_list = Category.objects.all().order_by('id')[:10]
-    # response = HttpResponse()
-    # heading1 = '<h2>' + 'List of Categories:' + '</h2>'
-    # response.write(heading1)
-    # for category in category_list:
-    #     para = '<p>' + str(category) + '</p>'
-    #     response.write(para)
-    # return response
+    category_list = Category.objects.all().order_by('id')[:10]
+    response = HttpResponse()
+    heading1 = '<h2>' + 'List of Categories:' + '</h2>'
+    response.write(heading1)
+    for category in category_list:
+        para = '<li>' + str(category) + '</li>'
+        response.write(para)
 
     course_list = Course.objects.all().order_by('-price')[:5]
-    response = HttpResponse()
     heading1 = '<h2>' + 'List of Courses:' + '</h2>'
     response.write(heading1)
     for course in course_list:
-        para = '<p>' + str(course) + '</p>'
+        para = '<li>' + str(course) + '</li>'
         response.write(para)
     return response
 
