@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Details</title>
+</head>
+<body>
+    <h2>{{ categories_courses.category }}</h2>
+    {% if categories_courses.courses %}
+    <ol>
+        {% for course in categories_courses.courses %}
+            <li><a href="{% url 'myappF23:ins_course_stud' course.id %}">{{ course.title }}</a></li>
+        {% endfor %}
+    </ol>
+    {% else %}
+        <strong>Sorry, no courses available!!!</strong>
+    {% endif %}
+    <br><a href="{% url 'myappF23:index' %}">Main Page</a>
+</body>
+</html>

@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Instructor Details</title>
+</head>
+<body>
+    <h2>{{ context.course }}</h2>
+    <h3>Taught by - {{ context.instructor }}</h3>
+    <h4>Students in this course -</h4>
+    <ol>
+        {% for student in context.students %}
+            <li>{{ student }}</li>
+        {% endfor %}
+    </ol>
+
+    <br><a href="{% url 'myappF23:index' %}">Main Page</a>
+</body>
+</html>
