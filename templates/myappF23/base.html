@@ -1,0 +1,22 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="{% static 'myappF23/styles.css'%}"/>
+    <title>E-Learning WebApp - {% block title %}Welcome!{% endblock %}</title>
+</head>
+<body>
+    <div>
+        <h1>{% block myhdg %}Hello Abhishek{% endblock %}</h1>
+        {% block body_block %}{% endblock %}
+    </div>
+    <hr/>
+    <div>
+        <ul>
+            <li class="hbar1"><a href="{% url 'myappF23:about' %}">Find out about our E-Learning Website</a></li>
+            <li class="hbar1"><a href="{% url 'myappF23:index' %}">Click here to return to main page</a><br></li>
+        </ul>
+    </div>
+</body>
+</html>

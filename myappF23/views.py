@@ -23,17 +23,27 @@ def index(request):
 
     # with render
     category_list = Category.objects.all().order_by('id')[:10]
-    return render(request, 'myappF23/index0.html', {'category_list': category_list})
+    return render(request, 'myappF23/index.html', {'category_list': category_list})
 
 def about(request):
     # with HttpResponse
     # response = HttpResponse()
-    # text1 = '<h1>' + 'This is a Distance Education Website! Search our Categories to find all available Courses.' + '</h1>'
+    # text1 = '<h1>' + 'Course name:' + '</h1>'
     # response.write(text1)
+    # course = Course.objects.get(id=1)
+    # course_name = '<h2>' + str(course) + '</h2>'
+    # response.write(course_name)
+    #
+    # students = course.students.all()
+    # text2 = '<h1>' + 'All Students:' + '</h1>'
+    # response.write(text2)
+    # for student in students:
+    #     s = '<li>' + str(student) + '</li>'
+    #     response.write(s)
     # return response
 
     # With render
-    return render(request, 'myappF23/about0.html')
+    return render(request, 'myappF23/about.html')
 
 def detail(request, category_no):
     # With Http Response
@@ -57,7 +67,7 @@ def detail(request, category_no):
         'category': category,
         'courses': courses,
     }
-    return render(request, 'myappF23/detail0.html', {'categories_courses': categories_courses})
+    return render(request, 'myappF23/detail.html', {'categories_courses': categories_courses})
 
 def ins_course_stud(request, ins_id):
     course = Course.objects.get(id=ins_id)
@@ -68,4 +78,4 @@ def ins_course_stud(request, ins_id):
         'students': students,
         'course': course,
     }
-    return render(request, 'myappF23/course-details.html', {'context': context})
+    return render(request, 'myappF23/course_details.html', {'context': context})
