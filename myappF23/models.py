@@ -53,6 +53,7 @@ class Course(models.Model):
                             ('IN', 'Intermediate'),
                             ('AD', 'Advanced')]
     level = models.CharField(max_length=10, choices=COURSE_LEVEL_CHOICES, default='Beginner')
+    interested = models.PositiveIntegerField(default=1)
 
     def __str__(self):
         return self.title
@@ -66,6 +67,14 @@ class Order(models.Model):
     ORDER_STATUS_CHOICE = [(0, 'Order Confirmed'), (1, 'Order Cancelled')]
     order_status = models.IntegerField(choices=ORDER_STATUS_CHOICE, default=1)
     order_date = models.DateField()
+    order_price = models.DecimalField(max_digits=20, decimal_places=3, null=True)
+    levels = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         return str(self.student)
+
+    def discount(self):
+        if self.order_price is not None:
+            self.order_price = self.order_price - (self.order_price / 10)
+            return self.order_price
+        return None

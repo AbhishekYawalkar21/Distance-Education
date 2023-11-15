@@ -1,0 +1,17 @@
+{% extends 'myappF23/base.html' %}
+{% block title %}Course List{% endblock title %}
+{% block body_block %}
+    <h2>Available Courses</h2>
+    {% if course_list %}
+        <ol>
+            {% for course in course_list %}
+                <li>
+                    <a href="{% url 'myappF23:coursedetail' course.id %}">{{ course.title }}</a>
+                </li>
+            {% endfor %}
+        </ol>
+    {% else %}
+        <strong>No courses available!</strong>
+    {% endif %}
+    <a href="{% url 'myappF23:place_order' %}">Place order</a>
+{% endblock body_block %}

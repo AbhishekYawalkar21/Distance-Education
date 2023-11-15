@@ -1,0 +1,15 @@
+{% extends 'myappF23/base.html' %}
+{% block title %}Course Details{% endblock title %}
+{% block body_block %}
+    <h2>{{ course.title }}</h2>
+    <h2>Interest Form</h2>
+    <p>Interested: {{ course.interested }}</p>
+    <p>Price: {{ course.price }}</p>
+    
+    <form method="post" action="">
+    {% csrf_token %}
+    {{ form.as_p }}
+        
+    <input type="submit" value="Submit">
+    </form>
+{% endblock body_block %}

@@ -8,5 +8,17 @@
     <h1>This is a Distance Education Website! Search our Categories to find all available Courses.</h1>
     <!--<a href="/myappF23">Main Page</a>-->
     <a href="{% url 'myappF23:index' %}">Main Page</a>
+{#<h1>Students name and courses ordered by them:</h1>#}
+{#{% for order in orders %}#}
+{#    <h3>{{ order.student }}</h3>#}
+{#    <li>{{ order.course }}</li>#}
+{#    {% if order.order_status == 0 %}#}
+{#        <h5>Order Confirmed</h5>#}
+{##}
+{#    {% else %}#}
+{#    <h5>Order Cancelled</h5>#}
+{##}
+{#{% endif %}#}
+{#{% endfor %}#}
 </body>
 </html>

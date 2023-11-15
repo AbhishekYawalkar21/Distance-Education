@@ -3,10 +3,77 @@
     margin: 15px;
 }
 
-h1{
-    color: teal;
+/* Set a background color for the entire page */
+body {
+  background-color: #f4f4f4;
+  color: #333;
+  font-family: Arial, sans-serif;
+  padding: 20px;
 }
 
-body{
-    background-color: floralwhite;
+/* Style the header with a background color, text color, and padding */
+h1 {
+  background-color: #0074b7;
+  color: #fff;
+  padding: 10px;
+  text-align: center;
 }
+
+/* Style the list of categories with bullets, spacing, and color */
+ol {
+    list-style: decimal;
+    margin: 20px 0;
+}
+
+li a {
+  color: #0074b7;
+  text-decoration: none;
+  display: block;
+  margin: 10px 0;
+}
+
+li a:hover {
+  color: #005387;
+}
+
+/* Style the "Click here to return to the main page" link */
+ul {
+  list-style: disc;
+  margin: 20px 0;
+}
+
+li a.return-link {
+  color: #0074b7;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+li a.return-link:hover {
+  text-decoration: underline;
+}
+
+
+/* Style the footer section with different text color */
+.footer {
+  background-color: #0074b7;
+  padding: 20px;
+  text-align: center;
+}
+
+/* Style the links as buttons with a different text color */
+.footer a {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #005387;
+  color: #fff; /* This is the text color */
+  text-decoration: none;
+  margin: 10px;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+}
+
+.footer a:hover {
+    background-color: #fff;
+    color: #005387;
+}
+

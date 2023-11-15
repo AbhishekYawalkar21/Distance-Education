@@ -1,6 +1,7 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse
-from .models import Category, Course, Student, Instructor
+from .models import Category, Course, Student, Instructor, Order
+from .forms import InterestForm, OrderForm
 
 # Create your views here.
 def index(request):
@@ -43,6 +44,7 @@ def about(request):
     # return response
 
     # With render
+    # orders = Order.objects.all()
     return render(request, 'myappF23/about.html')
 
 def detail(request, category_no):
@@ -79,3 +81,50 @@ def ins_course_stud(request, ins_id):
         'course': course,
     }
     return render(request, 'myappF23/course_details.html', {'context': context})
+
+def courses(request):
+    course_list = Course.objects.all().order_by('id')
+    return render(request, 'myappF23/courses.html', {'course_list': course_list})
+
+def place_order(request):
+    msg = ''
+    course_list = Course.objects.all()
+    if request.method == 'POST':
+        form = OrderForm(request.POST)
+        if form.is_valid():
+            order = form.save(commit=False)
+            if order.course.level == 'BE':
+                order.course.level = 1
+            elif order.course.level == 'IN':
+                order.course.level = 2
+            elif order.course.level == 'AD':
+                order.course.level = 3
+            if order.levels > order.course.level:
+                msg = 'You exceeded the number of levels for this course.'
+                return render(request, 'myappF23/order_response.html', {'msg': msg})
+            if order.course.price > 150.00:
+                order.discount()
+            order.save()
+            msg = 'Your course has been ordered successfully.'
+        else:
+            msg = 'There was an issue with the form submission. Please check your input.'
+            return render(request, 'myappF23/order_response.html', {'msg': msg})
+    else:
+        form = OrderForm()
+    return render(request, 'myappF23/placeorder.html', {'form': form, 'msg': msg, 'course_list': course_list})
+
+def coursedetail(request, course_id):
+    course = Course.objects.get(id=course_id)
+
+    if request.method == 'POST':
+        form = InterestForm(request.POST)
+        if form.is_valid():
+            interested = form.cleaned_data['interested']
+            if interested == '1':
+                course.interested += 1
+                course.save()
+                return redirect('myappF23:index')
+    else:
+        form = InterestForm(initial={'levels': 1})
+
+    return render(request, 'myappF23/coursedetail.html', {'course': course, 'form': form})
