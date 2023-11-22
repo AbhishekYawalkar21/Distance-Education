@@ -1,9 +1,14 @@
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render, get_object_or_404, redirect, reverse, HttpResponse, HttpResponseRedirect
 from django.http import HttpResponse
 from .models import Category, Course, Student, Instructor, Order
 from .forms import InterestForm, OrderForm
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
+from datetime import timedelta, datetime
+from django.urls import reverse
 
 # Create your views here.
+@login_required
 def index(request):
     # with HttpResponse
     # category_list = Category.objects.all().order_by('id')[:10]
@@ -24,8 +29,30 @@ def index(request):
 
     # with render
     category_list = Category.objects.all().order_by('id')[:10]
-    return render(request, 'myappF23/index.html', {'category_list': category_list})
+    # return render(request, 'myappF23/index.html', {'category_list': category_list})
 
+    # last_login_info = request.session.get('last_login_info')
+    # if last_login_info:
+    #     return HttpResponse(f'Your last login was: {last_login_info}')
+    # else:
+    #     return HttpResponse('Your last login was more than 5 minutes ago')
+
+    user_visits = request.COOKIES.get('user_visits', 0)
+    last_login_info = request.session.get('last_login_info')
+    response = render(request, 'myappF23/index.html', {
+        'category_list': category_list,
+        'user_visits': user_visits,
+        'about_visits': request.COOKIES.get('user_visits_about', 0),
+        'last_login_info': last_login_info,
+    })
+    if 'user_visits' in request.COOKIES:
+        user_visits = int(request.COOKIES['user_visits']) + 1
+    else:
+        user_visits = 1
+    response.set_cookie('user_visits', user_visits, max_age=10)
+    return response
+
+@login_required
 def about(request):
     # with HttpResponse
     # response = HttpResponse()
@@ -45,8 +72,23 @@ def about(request):
 
     # With render
     # orders = Order.objects.all()
-    return render(request, 'myappF23/about.html')
+    # all_courses = Course.objects.all().order_by('id')
+    # return render(request, 'myappF23/about.html', {'all_courses': all_courses})
+    # return render(request, 'myappF23/about.html')
 
+    user_visits_about = request.COOKIES.get('user_visits_about', 0)
+    response = render(request, 'myappF23/about.html',
+                      {'user_visits_about': user_visits_about})
+
+    if 'user_visits_about' in request.COOKIES:
+        user_visits_about = int(request.COOKIES['user_visits_about']) + 1
+    else:
+        user_visits_about = 1
+    response.set_cookie('user_visits_about', user_visits_about,
+                        max_age=10)
+    return response
+
+@login_required
 def detail(request, category_no):
     # With Http Response
     # get_object_or_404(Category, id=category_no)
@@ -71,6 +113,7 @@ def detail(request, category_no):
     }
     return render(request, 'myappF23/detail.html', {'categories_courses': categories_courses})
 
+@login_required
 def ins_course_stud(request, ins_id):
     course = Course.objects.get(id=ins_id)
     instructor = course.instructor.first_name + ' ' + course.instructor.last_name
@@ -86,6 +129,7 @@ def courses(request):
     course_list = Course.objects.all().order_by('id')
     return render(request, 'myappF23/courses.html', {'course_list': course_list})
 
+@login_required
 def place_order(request):
     msg = ''
     course_list = Course.objects.all()
@@ -113,6 +157,7 @@ def place_order(request):
         form = OrderForm()
     return render(request, 'myappF23/placeorder.html', {'form': form, 'msg': msg, 'course_list': course_list})
 
+@login_required
 def coursedetail(request, course_id):
     course = Course.objects.get(id=course_id)
 
@@ -128,3 +173,72 @@ def coursedetail(request, course_id):
         form = InterestForm(initial={'levels': 1})
 
     return render(request, 'myappF23/coursedetail.html', {'course': course, 'form': form})
+
+def user_login(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(username=username, password=password)
+
+        if user is not None:
+            if user.is_active:
+                login(request, user)
+                request.session['last_login_info'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                request.session.set_expiry(300)
+                return HttpResponseRedirect(reverse('myappF23:index'))
+            else:
+                return HttpResponse('Your account is disabled.')
+        else:
+            return HttpResponse('Invalid login details.')
+    else:
+        return render(request, 'myappF23/login.html')
+
+@login_required
+def user_logout(request):
+    # logout(request)
+    request.session.flush()
+    return HttpResponseRedirect(reverse('myappF23:index'))
+
+@login_required
+def myaccount(request):
+    if request.user.is_authenticated:
+        if hasattr(request.user, 'student'):
+            student = request.user.student
+            first_name = student.first_name
+            last_name = student.last_name
+            courses_ordered = Order.objects.filter(student=student, order_status=0)
+            courses_interested = student.course_set.all()
+
+            return render(request,'myappF23/myaccount.html', {
+                'full_name': f"{first_name} {last_name}",
+                'courses_ordered': courses_ordered,
+                'courses_interested':courses_interested,
+            })
+        else:
+            return HttpResponse('You are not a registered student!')
+    else:
+        return HttpResponse('You are not logged in!')
+
+def set_test_cookie(request):
+    request.session.set_test_cookie()
+    return HttpResponse("Test cookie set")
+    # response = HttpResponse("Test cookie set")
+    # response.set_cookie('cookie1', '1')
+    # return response
+
+def check_test_cookie(request):
+    if request.session.test_cookie_worked():
+        request.session.delete_test_cookie()
+        return HttpResponse('Test cookie worked')
+    else:
+        return HttpResponse('Test cookie failed')
+
+
+#Lab 9 answers for part 3:
+# d. Make the user’s session cookies to expire when the user’s web browser is closed instead of 5 minutes.
+# i) do you need to change anything in your view functions?
+#Answer: No, we don't have to change anything in view functions.
+
+# ii) what setting you use to do that?
+#Answer: In settings.py file, add one line: SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+#        This line will make sure user's session cookies expire if the web browser is closed.

@@ -11,6 +11,15 @@
     {% else %}
         <strong>There are no available categories!</strong>
     {% endif %}
+
+    <h3>This page has been visited {{ user_visits }} times.</h3>
+    <h3>About page has been visited {{ about_visits }} times.</h3>
+    {% if last_login_info %}
+        <h4>Your last login was: {{ last_login_info }}</h4>
+    {% else %}
+        <h4>Your last login was more than 5 minutes ago</h4>
+    {% endif %}
+
     <!-- <p><a href="/myappF23/about">About Page</a></p> -->
 {#    <a href="{% url 'myappF23:about' %}">About Page</a>#}
 {% endblock %}

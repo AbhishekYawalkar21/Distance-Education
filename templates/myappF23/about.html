@@ -4,4 +4,10 @@
     <h1>This is a Distance Education Website! Search our Categories to find all available Courses.</h1>
     <!--<a href="/myappF23">Main Page</a>-->
 {#    <a href="{% url 'myappF23:index' %}">Main Page</a>#}
+
+{#    <h1>All courses with their prices</h1>#}
+{#    {% for c in all_courses %}#}
+{#    	<li>{{ c.title }} and its price is- {{ c.price }}</li>#}
+{#    {% endfor %}#}
+    <h3>This page has been visited {{ user_visits_about }} time{{ user_visits_about|pluralize }}</h3>
 {% endblock %}

@@ -1,5 +1,5 @@
 from django import forms
-from myappF23.models import Order
+from myappF23.models import Order, Course
 from django.forms import ModelForm, RadioSelect, SelectDateWidget
 
 class InterestForm(forms.Form):
@@ -23,7 +23,6 @@ class InterestForm(forms.Form):
     comments = forms.CharField(
         label='Additional Comments',
         widget=forms.Textarea,
-        required=False,
     )
 
 class OrderForm(forms.ModelForm):
